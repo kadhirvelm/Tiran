@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="YXG-U7-Ncu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="WDM-FE-Rci">
     <device id="retina4_7" orientation="landscape">
         <adaptation id="fullscreen"/>
     </device>
@@ -33,11 +33,20 @@
                                     <segue destination="GDG-kn-EsG" kind="embed" id="ep7-eB-tNY"/>
                                 </connections>
                             </containerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ia6-gY-UwX">
+                                <rect key="frame" x="20" y="20" width="30" height="30"/>
+                                <state key="normal" title="Exit"/>
+                                <connections>
+                                    <segue destination="WDM-FE-Rci" kind="show" id="Fsa-nc-ica"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="ia6-gY-UwX" firstAttribute="leading" secondItem="ZeA-hw-N7Y" secondAttribute="leading" id="4kK-Oe-IBH"/>
                             <constraint firstAttribute="bottom" secondItem="ZeA-hw-N7Y" secondAttribute="bottom" constant="20" symbolic="YES" id="7Yl-8J-dUp"/>
                             <constraint firstItem="ZeA-hw-N7Y" firstAttribute="leading" secondItem="5c8-dx-Xti" secondAttribute="leadingMargin" id="8bn-xR-fYu"/>
+                            <constraint firstItem="ia6-gY-UwX" firstAttribute="top" secondItem="lcO-wh-bxl" secondAttribute="bottom" id="I4W-Ob-8IO"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -97,7 +106,54 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="01T-d0-Gwb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-757" y="581"/>
+            <point key="canvasLocation" x="-757" y="741"/>
+        </scene>
+        <!--Networking View Controller-->
+        <scene sceneID="jwo-YO-mYh">
+            <objects>
+                <viewController id="WDM-FE-Rci" customClass="NetworkingViewController" customModule="Tiran" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4qB-dR-i2L"/>
+                        <viewControllerLayoutGuide type="bottom" id="dGr-5A-21a"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="daQ-j4-7ld">
+                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MfI-Nz-o93">
+                                <rect key="frame" x="309" y="172" width="48" height="30"/>
+                                <state key="normal" title="Match!"/>
+                                <connections>
+                                    <action selector="match:" destination="WDM-FE-Rci" eventType="touchUpInside" id="8pH-BK-FJd"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IyS-tW-qpd">
+                                <rect key="frame" x="298" y="210" width="70" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="cYy-Su-3MU"/>
+                                </constraints>
+                                <state key="normal" title="Practice!"/>
+                                <connections>
+                                    <action selector="practice:" destination="WDM-FE-Rci" eventType="touchUpInside" id="8ni-sD-rJL"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="MfI-Nz-o93" firstAttribute="centerX" secondItem="daQ-j4-7ld" secondAttribute="centerX" id="5S1-d9-AuP"/>
+                            <constraint firstItem="IyS-tW-qpd" firstAttribute="top" secondItem="MfI-Nz-o93" secondAttribute="bottom" constant="8" symbolic="YES" id="Nlx-RA-7VB"/>
+                            <constraint firstItem="MfI-Nz-o93" firstAttribute="centerY" secondItem="daQ-j4-7ld" secondAttribute="centerY" id="TTh-MK-u9S"/>
+                            <constraint firstItem="IyS-tW-qpd" firstAttribute="centerX" secondItem="MfI-Nz-o93" secondAttribute="centerX" id="gub-RQ-Hwe"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="match" destination="MfI-Nz-o93" id="vSn-O2-OP8"/>
+                        <segue destination="YXG-U7-Ncu" kind="show" identifier="Start_Match" id="n0Z-WO-70E"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xYY-ZI-wEA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1504.4977511244379" y="8.8000000000000007"/>
         </scene>
     </scenes>
 </document>
