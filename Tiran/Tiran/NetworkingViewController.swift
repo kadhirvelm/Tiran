@@ -14,7 +14,7 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
     var gameCenterAvailable = true
     var userAuthenticated = false
     var matchTiran: GKMatch? = nil
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.authenticateLocalPlayer()
@@ -37,20 +37,20 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
     @IBOutlet weak var match: UIButton!
     
     @IBAction func match(_ sender: UIButton) {
+        self.authenticateLocalPlayer()
         if self.userAuthenticated {
-            print("Creating match")
             createMatch()
         }
     }
     
     @IBAction func practice(_ sender: UIButton) {
-        self.performSegue(withIdentifier: "Start_Match", sender: self)
+        self.performSegue(withIdentifier: "Practice", sender: self)
     }
     
     
     func createMatch() {
         let request = GKMatchRequest.init()
-        request.maxPlayers = 2
+        request.maxPlayers = 4
         
         let matchController = GKMatchmakerViewController(matchRequest: request)
         matchController?.matchmakerDelegate = self
@@ -65,15 +65,12 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
         viewController.dismiss(animated: true) { 
             self.match.setTitle("Matched", for: UIControlState.normal)
             self.matchTiran = match
-            self.performSegue(withIdentifier: "Start_Match", sender: self)
+            self.performSegue(withIdentifier: "Player Selection", sender: self)
         }
     }
     
     func matchmakerViewControllerWasCancelled(_ viewController: GKMatchmakerViewController) {
-        print("Cancelled")
-        viewController.dismiss(animated: true) { 
-            print("And dismissed")
-        }
+        viewController.dismiss(animated: true)
     }
     
     func matchmakerViewController(_ viewController: GKMatchmakerViewController, hostedPlayerDidAccept player: GKPlayer) {
@@ -93,6 +90,9 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
         if segue.destination is ControllerViewController {
             let destinationController = segue.destination as! ControllerViewController
             destinationController.match = self.matchTiran
+        } else if segue.destination is PlayerSelectionViewController {
+            let destinationController = segue.destination as! PlayerSelectionViewController
+            destinationController.currentMatch = self.matchTiran
         }
     }
 

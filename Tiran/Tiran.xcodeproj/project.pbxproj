@@ -14,10 +14,16 @@
 		271F11E21E06516B0068561D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 271F11E01E06516B0068561D /* LaunchScreen.storyboard */; };
 		271F11ED1E06516B0068561D /* TiranTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F11EC1E06516B0068561D /* TiranTests.swift */; };
 		271F11F81E06516B0068561D /* TiranUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F11F71E06516B0068561D /* TiranUITests.swift */; };
-		271F5ABB1E08B34A000899ED /* Red_Figure.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 271F5ABA1E08B34A000899ED /* Red_Figure.atlas */; };
 		271F5AC11E08B931000899ED /* PlayerScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 271F5AC01E08B931000899ED /* PlayerScene.sks */; };
 		271F5AC31E08D676000899ED /* ControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F5AC21E08D676000899ED /* ControllerViewController.swift */; };
 		271F5AC51E08DD9E000899ED /* JoystickViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F5AC41E08DD9E000899ED /* JoystickViewController.swift */; };
+		27458F401E0BE53900ADFFBC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27458F3F1E0BE53900ADFFBC /* Player.swift */; };
+		27C5B1081E0B755E0087B2E2 /* Player_1.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27C5B1041E0B755E0087B2E2 /* Player_1.atlas */; };
+		27C5B10F1E0B76E20087B2E2 /* Player_2.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27C5B10C1E0B76E20087B2E2 /* Player_2.atlas */; };
+		27C5B1101E0B76E20087B2E2 /* Player_3.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27C5B10D1E0B76E20087B2E2 /* Player_3.atlas */; };
+		27C5B1111E0B76E20087B2E2 /* Player_4.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27C5B10E1E0B76E20087B2E2 /* Player_4.atlas */; };
+		27C5B1131E0B7BC00087B2E2 /* PlayerSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C5B1121E0B7BC00087B2E2 /* PlayerSelectionViewController.swift */; };
+		27C5B1151E0B7F800087B2E2 /* PlayerSelectionTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C5B1141E0B7F800087B2E2 /* PlayerSelectionTableViewCell.swift */; };
 		27CF5A921E0A5F0100BBE53F /* NetworkingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CF5A911E0A5F0100BBE53F /* NetworkingViewController.swift */; };
 		27CF5A951E0A61C000BBE53F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27CF5A941E0A61C000BBE53F /* GameKit.framework */; };
 /* End PBXBuildFile section */
@@ -53,10 +59,16 @@
 		271F11F31E06516B0068561D /* TiranUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TiranUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		271F11F71E06516B0068561D /* TiranUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiranUITests.swift; sourceTree = "<group>"; };
 		271F11F91E06516B0068561D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		271F5ABA1E08B34A000899ED /* Red_Figure.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Red_Figure.atlas; sourceTree = "<group>"; };
 		271F5AC01E08B931000899ED /* PlayerScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PlayerScene.sks; sourceTree = "<group>"; };
 		271F5AC21E08D676000899ED /* ControllerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerViewController.swift; sourceTree = "<group>"; };
 		271F5AC41E08DD9E000899ED /* JoystickViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoystickViewController.swift; sourceTree = "<group>"; };
+		27458F3F1E0BE53900ADFFBC /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		27C5B1041E0B755E0087B2E2 /* Player_1.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Player_1.atlas; sourceTree = "<group>"; };
+		27C5B10C1E0B76E20087B2E2 /* Player_2.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Player_2.atlas; sourceTree = "<group>"; };
+		27C5B10D1E0B76E20087B2E2 /* Player_3.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Player_3.atlas; sourceTree = "<group>"; };
+		27C5B10E1E0B76E20087B2E2 /* Player_4.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Player_4.atlas; sourceTree = "<group>"; };
+		27C5B1121E0B7BC00087B2E2 /* PlayerSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerSelectionViewController.swift; sourceTree = "<group>"; };
+		27C5B1141E0B7F800087B2E2 /* PlayerSelectionTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerSelectionTableViewCell.swift; sourceTree = "<group>"; };
 		27CF5A911E0A5F0100BBE53F /* NetworkingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingViewController.swift; sourceTree = "<group>"; };
 		27CF5A941E0A61C000BBE53F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -111,13 +123,12 @@
 		271F11D01E06516B0068561D /* Tiran */ = {
 			isa = PBXGroup;
 			children = (
+				27458F411E0BE53F00ADFFBC /* Model */,
+				27C5B1181E0B82AF0087B2E2 /* ViewControllers */,
+				27C5B1171E0B82A60087B2E2 /* Scenes */,
+				27C5B1161E0B829B0087B2E2 /* View */,
 				273191D51E07DFE90061F7D9 /* Supporting Files */,
-				271F11D71E06516B0068561D /* PlayerScene.swift */,
-				271F5AC21E08D676000899ED /* ControllerViewController.swift */,
-				271F5AC01E08B931000899ED /* PlayerScene.sks */,
 				271F11DB1E06516B0068561D /* Main.storyboard */,
-				27CF5A911E0A5F0100BBE53F /* NetworkingViewController.swift */,
-				271F5AC41E08DD9E000899ED /* JoystickViewController.swift */,
 			);
 			path = Tiran;
 			sourceTree = "<group>";
@@ -145,11 +156,50 @@
 			children = (
 				271F11D11E06516B0068561D /* AppDelegate.swift */,
 				271F11DE1E06516B0068561D /* Assets.xcassets */,
-				271F5ABA1E08B34A000899ED /* Red_Figure.atlas */,
+				27C5B1041E0B755E0087B2E2 /* Player_1.atlas */,
+				27C5B10C1E0B76E20087B2E2 /* Player_2.atlas */,
+				27C5B10D1E0B76E20087B2E2 /* Player_3.atlas */,
+				27C5B10E1E0B76E20087B2E2 /* Player_4.atlas */,
 				271F11E01E06516B0068561D /* LaunchScreen.storyboard */,
 				271F11E31E06516B0068561D /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		27458F411E0BE53F00ADFFBC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				27458F3F1E0BE53900ADFFBC /* Player.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		27C5B1161E0B829B0087B2E2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				27C5B1141E0B7F800087B2E2 /* PlayerSelectionTableViewCell.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		27C5B1171E0B82A60087B2E2 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				271F11D71E06516B0068561D /* PlayerScene.swift */,
+				271F5AC01E08B931000899ED /* PlayerScene.sks */,
+			);
+			name = Scenes;
+			sourceTree = "<group>";
+		};
+		27C5B1181E0B82AF0087B2E2 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				271F5AC21E08D676000899ED /* ControllerViewController.swift */,
+				27C5B1121E0B7BC00087B2E2 /* PlayerSelectionViewController.swift */,
+				27CF5A911E0A5F0100BBE53F /* NetworkingViewController.swift */,
+				271F5AC41E08DD9E000899ED /* JoystickViewController.swift */,
+			);
+			name = ViewControllers;
 			sourceTree = "<group>";
 		};
 		27CF5A931E0A61C000BBE53F /* Frameworks */ = {
@@ -275,11 +325,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27C5B1081E0B755E0087B2E2 /* Player_1.atlas in Resources */,
+				27C5B1111E0B76E20087B2E2 /* Player_4.atlas in Resources */,
 				271F11DD1E06516B0068561D /* Main.storyboard in Resources */,
 				271F11DF1E06516B0068561D /* Assets.xcassets in Resources */,
 				271F5AC11E08B931000899ED /* PlayerScene.sks in Resources */,
 				271F11E21E06516B0068561D /* LaunchScreen.storyboard in Resources */,
-				271F5ABB1E08B34A000899ED /* Red_Figure.atlas in Resources */,
+				27C5B10F1E0B76E20087B2E2 /* Player_2.atlas in Resources */,
+				27C5B1101E0B76E20087B2E2 /* Player_3.atlas in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,8 +357,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27C5B1131E0B7BC00087B2E2 /* PlayerSelectionViewController.swift in Sources */,
 				27CF5A921E0A5F0100BBE53F /* NetworkingViewController.swift in Sources */,
+				27C5B1151E0B7F800087B2E2 /* PlayerSelectionTableViewCell.swift in Sources */,
 				271F5AC31E08D676000899ED /* ControllerViewController.swift in Sources */,
+				27458F401E0BE53900ADFFBC /* Player.swift in Sources */,
 				271F11D81E06516B0068561D /* PlayerScene.swift in Sources */,
 				271F11D21E06516B0068561D /* AppDelegate.swift in Sources */,
 				271F5AC51E08DD9E000899ED /* JoystickViewController.swift in Sources */,

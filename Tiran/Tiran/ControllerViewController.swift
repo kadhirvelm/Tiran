@@ -12,8 +12,22 @@ import SpriteKit
 
 class ControllerViewController: UIViewController, JoyStickViewControllerDelegate, GKMatchDelegate {
     
-    var player: PlayerScene? = nil
+    /** Needs to be set. */
     var match: GKMatch? = nil
+    /** Needs to be set. */
+    var currPlayer: Player? = nil
+    /** Needs to be set. */
+    var otherPlayers: [Player]? = nil
+    
+    var playerField: PlayerScene? = nil
+    var countSinceSync = 0 {
+        didSet {
+            if countSinceSync == 10 {
+                updatePosition()
+                countSinceSync = 0
+            }
+        }
+    }
     
     var dataSender: [String: Any?]? = nil
     
@@ -25,10 +39,9 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
         }
     
         if let fieldScene = PlayerScene.unarchiveFromFile(file: "PlayerScene") as? PlayerScene {
-            self.player = fieldScene
-            
-            self.player?.num_other_players = 1
-            
+            self.playerField = fieldScene
+            self.playerField?.localPlayerInfo = self.currPlayer
+            self.playerField?.otherPlayers = self.otherPlayers!
             let skView = self.view as! SKView
             skView.showsFPS = true
             skView.showsNodeCount = true
@@ -55,44 +68,61 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
     }
     
     func didMove(x: CGFloat) {
-        self.player?.updatePlayer(dx: x)
-        updatePosition()
+        self.playerField?.updatePlayer(dx: x)
+        updateVelocity()
     }
     
     func didDuck() { }
     
     func didJump() {
-        self.player?.jumpPlayer()
-        updatePosition()
+        self.playerField?.jumpPlayer()
+        countSinceSync = 0
+        updateVelocity()
     }
     
     func didStop() {
-        self.player?.stopPlayer()
-        updatePosition()
+        self.playerField?.stopPlayer()
+        updateVelocity()
+    }
+    
+    func updateVelocity() {
+        if match != nil {
+            let currVelocity = self.playerField?.localPlayer?.physicsBody?.velocity
+            dataSender = ["dx": currVelocity?.dx, "dy": currVelocity?.dy, "action": self.playerField?.playerCurrAction, "direction": self.playerField?.localPlayer?.xScale]
+            let dataExample = NSKeyedArchiver.archivedData(withRootObject: dataSender!)
+            do {
+                try match!.sendData(toAllPlayers: dataExample, with: GKMatchSendDataMode.unreliable)
+                countSinceSync += 1
+            } catch {
+                print("Error sending data")
+            }
+        }
     }
     
     func updatePosition() {
-        let position = (self.player?.player?.position)!
-        dataSender = ["body": nil, "x": position.x, "y": position.y, "action": self.player?.playerCurrAction, "direction": self.player?.player?.xScale]
-        let dataExample = NSKeyedArchiver.archivedData(withRootObject: dataSender!)
-        do {
-            print("Data sent \(NSDate().timeIntervalSinceReferenceDate * 1000)")
-            try match!.sendData(toAllPlayers: dataExample, with: GKMatchSendDataMode.unreliable)
-            dataSender = nil
-        } catch {
-            print("Error sending data")
+        if match != nil {
+            let position = (self.playerField?.localPlayer?.position)!
+            dataSender = ["x": position.x, "y": position.y]
+            let dataExample = NSKeyedArchiver.archivedData(withRootObject: dataSender!)
+            do {
+                try match!.sendData(toAllPlayers: dataExample, with: GKMatchSendDataMode.unreliable)
+                dataSender = nil
+            } catch {
+                print("Error sending data")
+            }
         }
     }
     
     func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
-        print("Data received \(NSDate().timeIntervalSinceReferenceDate * 1000)")
         let dictionary: Dictionary? = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String : Any]
-        self.player?.updateOtherPlayerPosition(index: 0, body: nil,
-                                               x: dictionary?["x"] as! Int,
-                                               y: dictionary?["y"] as! Int)
-        self.player?.updateOtherPlayerAction(index: 0, action: dictionary?["action"] as! String, direction: dictionary?["direction"] as! CGFloat)
+        if dictionary?["dx"] != nil {
+            let velocity = CGVector(dx: dictionary?["dx"] as! CGFloat, dy: dictionary?["dy"] as! CGFloat)
+            self.playerField?.updateOtherPlayerVelocity(playerID: player.playerID!, velocity: velocity)
+            self.playerField?.updateOtherPlayerAction(playerID: player.playerID!, action: dictionary?["action"] as! String, direction: dictionary?["direction"] as! CGFloat)
+        } else if dictionary?["x"] != nil {
+            self.playerField?.syncOtherPlayerPosition(playerID: player.playerID!, x: dictionary?["x"] as! CGFloat, y: dictionary?["y"] as! CGFloat)
+        }
     }
-
 }
 
 
