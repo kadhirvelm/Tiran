@@ -18,6 +18,7 @@
 		271F5AC31E08D676000899ED /* ControllerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F5AC21E08D676000899ED /* ControllerViewController.swift */; };
 		271F5AC51E08DD9E000899ED /* JoystickViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271F5AC41E08DD9E000899ED /* JoystickViewController.swift */; };
 		27458F401E0BE53900ADFFBC /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27458F3F1E0BE53900ADFFBC /* Player.swift */; };
+		27B916251E0E58F400C46060 /* Sword_Basic.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27B916241E0E58F400C46060 /* Sword_Basic.atlas */; };
 		27C5B1081E0B755E0087B2E2 /* Player_1.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27C5B1041E0B755E0087B2E2 /* Player_1.atlas */; };
 		27C5B10F1E0B76E20087B2E2 /* Player_2.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27C5B10C1E0B76E20087B2E2 /* Player_2.atlas */; };
 		27C5B1101E0B76E20087B2E2 /* Player_3.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 27C5B10D1E0B76E20087B2E2 /* Player_3.atlas */; };
@@ -63,6 +64,7 @@
 		271F5AC21E08D676000899ED /* ControllerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControllerViewController.swift; sourceTree = "<group>"; };
 		271F5AC41E08DD9E000899ED /* JoystickViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoystickViewController.swift; sourceTree = "<group>"; };
 		27458F3F1E0BE53900ADFFBC /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		27B916241E0E58F400C46060 /* Sword_Basic.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Sword_Basic.atlas; sourceTree = "<group>"; };
 		27C5B1041E0B755E0087B2E2 /* Player_1.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Player_1.atlas; sourceTree = "<group>"; };
 		27C5B10C1E0B76E20087B2E2 /* Player_2.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Player_2.atlas; sourceTree = "<group>"; };
 		27C5B10D1E0B76E20087B2E2 /* Player_3.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = Player_3.atlas; sourceTree = "<group>"; };
@@ -154,12 +156,9 @@
 		273191D51E07DFE90061F7D9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				277943D41E0DFF0200D35E9C /* Animations */,
 				271F11D11E06516B0068561D /* AppDelegate.swift */,
 				271F11DE1E06516B0068561D /* Assets.xcassets */,
-				27C5B1041E0B755E0087B2E2 /* Player_1.atlas */,
-				27C5B10C1E0B76E20087B2E2 /* Player_2.atlas */,
-				27C5B10D1E0B76E20087B2E2 /* Player_3.atlas */,
-				27C5B10E1E0B76E20087B2E2 /* Player_4.atlas */,
 				271F11E01E06516B0068561D /* LaunchScreen.storyboard */,
 				271F11E31E06516B0068561D /* Info.plist */,
 			);
@@ -172,6 +171,18 @@
 				27458F3F1E0BE53900ADFFBC /* Player.swift */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		277943D41E0DFF0200D35E9C /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				27B916241E0E58F400C46060 /* Sword_Basic.atlas */,
+				27C5B1041E0B755E0087B2E2 /* Player_1.atlas */,
+				27C5B10C1E0B76E20087B2E2 /* Player_2.atlas */,
+				27C5B10D1E0B76E20087B2E2 /* Player_3.atlas */,
+				27C5B10E1E0B76E20087B2E2 /* Player_4.atlas */,
+			);
+			name = Animations;
 			sourceTree = "<group>";
 		};
 		27C5B1161E0B829B0087B2E2 /* View */ = {
@@ -326,6 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				27C5B1081E0B755E0087B2E2 /* Player_1.atlas in Resources */,
+				27B916251E0E58F400C46060 /* Sword_Basic.atlas in Resources */,
 				27C5B1111E0B76E20087B2E2 /* Player_4.atlas in Resources */,
 				271F11DD1E06516B0068561D /* Main.storyboard in Resources */,
 				271F11DF1E06516B0068561D /* Assets.xcassets in Resources */,

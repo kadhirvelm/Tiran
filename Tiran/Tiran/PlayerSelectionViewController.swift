@@ -19,7 +19,8 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
     }
     var currentMatch: GKMatch? = nil
     let localGKPlayer = GKLocalPlayer.localPlayer()
-    var otherPlayers = [Player]()
+    
+    var otherPlayers = [String: Player]()
     
     @IBOutlet weak var playersTable: UITableView!
     @IBOutlet weak var playerImage: UIImageView!
@@ -31,11 +32,8 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.currentMatch?.delegate = self
-        
         self.localPlayer.text = localGKPlayer.displayName
-        
         if currentMatch != nil {
             populateOtherPlayers()
         }
@@ -44,7 +42,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
     func populateOtherPlayers() {
         for player in currentMatch!.players {
             let newPlayer = Player(playerID: player.playerID!, playerName: player.alias!, playerNumber: "None", playerLockedIn: false)
-            otherPlayers.append(newPlayer)
+            otherPlayers[newPlayer.playerID] = newPlayer
         }
         playersTable.reloadData()
     }
@@ -68,7 +66,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
     }
     
     @IBAction func lockIn(_ sender: UIButton) {
-        if checkIfCanLockIn() {
+        if checkIfCanLockIn() == nil {
             errorSelecting.isHidden = true
             self.lockIn.isEnabled = false
             self.lockIn.setTitle("Waiting...", for: UIControlState.disabled)
@@ -83,15 +81,15 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
-    func checkIfCanLockIn() -> Bool {
-        for player in self.otherPlayers {
+    func checkIfCanLockIn() -> String? {
+        for player in self.otherPlayers.values {
             if player.playerLockedIn {
                 if player.playerNumber == playerIcons[currentSelection] {
-                    return false
+                    return player.playerName
                 }
             }
         }
-        return true
+        return nil
     }
     
     
@@ -114,7 +112,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
     }
     
     func updateOtherPlayerSelections(playerID: String, playerSelected: String) {
-        for player in self.otherPlayers {
+        for player in self.otherPlayers.values {
             if player.playerID == playerID {
                 player.playerLockedIn = true
                 player.playerNumber = playerSelected
@@ -139,7 +137,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
     }
     
     private func checkIfAllLockedIn() -> Bool {
-        for player in otherPlayers {
+        for player in otherPlayers.values {
             if player.playerLockedIn == false {
                 return false
             }
@@ -153,7 +151,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlayerCell", for: indexPath) as? PlayerSelectionTableViewCell
-        let tempPlayer = otherPlayers[indexPath.row]
+        let tempPlayer = (otherPlayers[otherPlayers.keys.sorted()[indexPath.row]])!
         cell?.didSelectPlayerName = tempPlayer.playerName
         cell?.didSelectPlayerNumber = tempPlayer.playerNumber
         cell?.didLockIn = tempPlayer.playerLockedIn

@@ -20,6 +20,8 @@ class JoystickViewController: UIViewController, UIGestureRecognizerDelegate{
     @IBOutlet weak var joyStick: UIView!
     
     var delegate: JoyStickViewControllerDelegate? = nil
+    var currentUnitVector: (CGFloat, CGFloat)?
+    var updating = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,19 +43,39 @@ class JoystickViewController: UIViewController, UIGestureRecognizerDelegate{
         UIView.animate(withDuration: 0.25) { 
             self.joyStick.center = self.backgroundView.center
         }
+        self.currentUnitVector = nil
+        self.updating = false
         self.delegate?.didStop()
     }
     
     func update_joystick(touch: UITouch) {
         let unitVector = determineUnitVector(newPoint: touch.location(in: backgroundView))
+        self.currentUnitVector = unitVector
         let joystickRadius = self.backgroundView.frame.width / 2 - self.joyStick.frame.width / 2
         self.joyStick.center = CGPoint(x: self.backgroundView.center.x + joystickRadius * unitVector.0, y: self.backgroundView.center.y + joystickRadius * unitVector.1)
-        self.delegate?.didMove(x: unitVector.0)
-        if unitVector.0 < 0.1 {
-            if unitVector.1 > 0.8 {
-                self.delegate?.didDuck()
-            } else if unitVector.1 < -0.8 {
-                self.delegate?.didJump()
+        if updating == false {
+            self.updating = true
+            sendDelegateMovements()
+        }
+    }
+    
+    func sendDelegateMovements() {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
+            while self.currentUnitVector != nil {
+                DispatchQueue.main.async {
+                    //wait in here
+                    if self.currentUnitVector != nil {
+                        if fabs((self.currentUnitVector?.0)!) < CGFloat(0.2) {
+                            if (self.currentUnitVector?.1)! > CGFloat(0.8) {
+                                self.delegate?.didDuck()
+                            } else if (self.currentUnitVector?.1)! < CGFloat(-0.8) {
+                                self.delegate?.didJump()
+                            }
+                        } else {
+                            self.delegate?.didMove(x: (self.currentUnitVector?.0)!)
+                        }
+                    }
+                }
             }
         }
     }
@@ -71,4 +93,13 @@ protocol JoyStickViewControllerDelegate {
     func didDuck()
     func didJump()
     func didStop()
+}
+
+extension DispatchQueue {
+    func delay(_ timeInterval: TimeInterval, execute work: @escaping () -> Void) {
+        let milliseconds = Int(timeInterval * Double(1000))
+        asyncAfter(deadline: .now() + .milliseconds(milliseconds)) { 
+            work()
+        }
+    }
 }

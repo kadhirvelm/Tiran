@@ -37,14 +37,22 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
     @IBOutlet weak var match: UIButton!
     
     @IBAction func match(_ sender: UIButton) {
-        self.authenticateLocalPlayer()
         if self.userAuthenticated {
+            for controller in self.childViewControllers {
+                controller.dismiss(animated: true, completion: nil)
+            }
             createMatch()
+        } else {
+            self.authenticateLocalPlayer()
         }
     }
     
     @IBAction func practice(_ sender: UIButton) {
-        self.performSegue(withIdentifier: "Practice", sender: self)
+        if self.userAuthenticated {
+            self.performSegue(withIdentifier: "Practice", sender: self)
+        } else {
+            authenticateLocalPlayer()
+        }
     }
     
     
@@ -89,7 +97,8 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is ControllerViewController {
             let destinationController = segue.destination as! ControllerViewController
-            destinationController.match = self.matchTiran
+            let localPlayer = GKLocalPlayer.localPlayer()
+            destinationController.currPlayer = Player(playerID: localPlayer.playerID!, playerName: localPlayer.displayName!, playerNumber: "Player_1", playerLockedIn: true)
         } else if segue.destination is PlayerSelectionViewController {
             let destinationController = segue.destination as! PlayerSelectionViewController
             destinationController.currentMatch = self.matchTiran
