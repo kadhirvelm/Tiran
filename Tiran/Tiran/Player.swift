@@ -31,14 +31,15 @@ class Player {
     var playerMaxHP: Int?
     var playerCurrentHP: Int? {
         didSet {
-            let newWidth = (self.playerMaxHPSprite?.size.width)! * CGFloat((playerMaxHP! - playerCurrentHP!)/playerMaxHP!)
+            let newWidth = ((self.playerCurrentDamageSprite?.position.x)! * 2) * CGFloat((playerMaxHP! - playerCurrentHP!)) / CGFloat(playerMaxHP!)
+            print("Total width \(self.playerMaxHPSprite?.size.width) and new width \(self.playerCurrentDamageSprite?.size.width)")
             self.playerCurrentDamageSprite?.run(SKAction.resize(toWidth: newWidth, duration: 0.15))
         }
     }
     var playerMaxVel: Int?
     var playerCurrentVel: Int? {
         didSet {
-            let newWidth = (self.playerMaxVelSprite?.size.width)! * CGFloat((playerMaxVel! - playerCurrentVel!)/playerMaxVel!)
+            let newWidth = ((self.playerCurrentVelConsumedSprite?.position.x)! * 2) * CGFloat((playerMaxVel! - playerCurrentVel!)) / CGFloat(playerMaxVel!)
             self.playerCurrentVelConsumedSprite?.run(SKAction.resize(toWidth: newWidth, duration: 0.15))
         }
     }

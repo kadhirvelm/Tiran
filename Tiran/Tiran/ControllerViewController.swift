@@ -80,6 +80,34 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
         self.playerField?.stopPlayer()
     }
     
+    var currTouches = [CGPoint]()
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            currTouches.append(touch.location(in: self.view))
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for (index, touch) in touches.enumerated() {
+            let previousLocation = touch.previousLocation(in: self.view)
+            let currentLocation = touch.location(in: self.view)
+            let startLocation = currTouches[index]
+            let forceVector = CGVector(dx: (previousLocation.x - currentLocation.x), dy: (previousLocation.y - currentLocation.y))
+            let changeVector = CGVector(dx: (currentLocation.x - startLocation.x), dy: (startLocation.y - currentLocation.y))
+            currTouches.remove(at: index)
+            self.handleVectors(forceVector: forceVector, changeVector: changeVector)
+        }
+    }
+    
+    func handleVectors(forceVector: CGVector, changeVector: CGVector) {
+        //use the force to determine how long it should take to traverse the space
+        let angle = tan(forceVector.dy/forceVector.dx) //from player's position to the end point of the swipe
+        self.playerField?.attack(vector: changeVector, angle: angle, force: 0.5)
+    }
+    
+    //MARK: DELEGATE METHODS FOR syncMovements
+    
     func updateVelocity() {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
             if self.match != nil {
@@ -112,6 +140,8 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
             }
         }
     }
+    
+    //MARK: DELEGATE METHODS FOR GKMATCHDELEGATE
     
     func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInteractive).async {

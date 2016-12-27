@@ -13,77 +13,24 @@ class PlayerScene: SKScene, SKPhysicsContactDelegate {
     var isJumping = false
     
     var syncMovementsDelegate: syncMovementsDelegate?
+    var playerSceneHelper: PlayerSceneHelper?
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
         
-        removeNonPlayers()
-        setPlayerSprites()
-        adjustPlayerSprites()
+        self.playerSceneHelper = PlayerSceneHelper(scene: self.scene!, allPlayers: allPlayers)
+        
+        playerSceneHelper!.removeNonPlayers()
+        playerSceneHelper!.setPlayerSprites()
+        playerSceneHelper!.adjustPlayerSprites()
         
         zoomCamera()
         updateCamera()
     }
     
-    func removeNonPlayers() {
-        for index in 1...4 {
-            let playerNum = "Player_\(index)"
-            
-            if !(allPlayers.contains(where: { (_: String, value: Player) -> Bool in
-                return value.playerNumber == playerNum
-            })) {
-                self.childNode(withName: playerNum)?.removeFromParent()
-                self.childNode(withName: "\(playerNum) Weapon")?.removeFromParent()
-            }
-        }
-    }
-    
-    func setPlayerSprites() {
-        for (_, player) in self.allPlayers {
-            let sprite = self.childNode(withName: player.playerNumber) as? SKSpriteNode
-            let weaponSprite = self.childNode(withName: "\(player.playerNumber) Weapon") as? SKSpriteNode
-            let nameSprite = sprite?.childNode(withName: "Name") as? SKLabelNode
-            let maxHPSprite = sprite?.childNode(withName: "HP") as? SKSpriteNode
-            let currentDamageSprite = maxHPSprite?.childNode(withName: "Damage") as? SKSpriteNode
-            let maxVelSprite = sprite?.childNode(withName: "Vel") as? SKSpriteNode
-            let currentVelConsumed = maxVelSprite?.childNode(withName: "VP") as? SKSpriteNode
-            
-            player.setSprites(playerSprite: sprite!,
-                              playerWeaponSprite: weaponSprite!,
-                              playerNameSprite: nameSprite!,
-                              playerMaxHPSprite: maxHPSprite!,
-                              playerCurrentDamageSprite: currentDamageSprite!,
-                              playerMaxVelSprite: maxVelSprite!,
-                              playerCurrentVelConsumedSprite: currentVelConsumed!)
-            player.playerMaxHP = 100
-            player.playerMaxVel = 100
-        }
-    }
-    
-    func adjustPlayerSprites() {
-        for (_, player) in self.allPlayers {
-            player.playerNameSprite?.text = player.playerName
-            let weaponIdle = SKAction.repeatForever(animate(frame_name: "Idle", atlasName: player.playerWeapon, duration: 0.15))
-            player.playerWeaponSprite?.run(weaponIdle)
-            
-            resetPlayerWeapon(playerID: player.playerID)
-            
-            player.playerCurrentHP = player.playerMaxHP
-            player.playerCurrentVel = player.playerMaxVel
-        }
-    }
-    
-    func resetPlayerWeapon(playerID: String) {
-        let player = allPlayers[playerID]
-        let weaponConstraint = SKConstraint.distance(SKRange(lowerLimit: 25, upperLimit: 40), to: (player?.playerNameSprite)!)
-        let weaponConstraint2 = SKConstraint.distance(SKRange(lowerLimit: 35, upperLimit: 40), to: (player?.playerSprite)!)
-        player?.playerWeaponSprite?.constraints = [weaponConstraint, weaponConstraint2]
-        
-    }
-    
     func zoomCamera() {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
-            sleep(3)
+            sleep(2)
             DispatchQueue.main.sync {
                 self.camera?.run(SKAction.scale(to: 0.5, duration: 0.75)) {
                 }
@@ -93,62 +40,6 @@ class PlayerScene: SKScene, SKPhysicsContactDelegate {
     
     override func didSimulatePhysics() {
         updateCamera()
-    }
-    
-    func updateOtherPlayerVelocity(playerID: String, velocity: CGVector?) {
-        if velocity != nil {
-            DispatchQueue.main.async {
-                self.allPlayers[playerID]?.playerSprite!.physicsBody?.velocity = velocity!
-            }
-        }
-    }
-    
-    func syncOtherPlayerPosition(playerID: String, x: CGFloat, y: CGFloat) {
-        let otherPlayer = allPlayers[playerID]?.playerSprite!
-        let syncPosition = CGPoint(x: x, y: y)
-        let distance = CGPointDistance(from: (otherPlayer?.position)!, to: syncPosition)
-        if distance >= 10 {
-            DispatchQueue.main.async {
-                otherPlayer?.position = syncPosition
-            }
-        }
-    }
-    
-    func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
-        return sqrt(CGPointDistanceSquared(from: from, to: to));
-    }
-    
-    func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
-        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y);
-    }
-    
-    func updateOtherPlayerAction(playerID: String, action: String, direction: CGFloat) {
-        let finalAction: SKAction?
-        
-        switch action {
-        case "idle":
-            finalAction = idle(atlasName: allPlayers[playerID]!.playerNumber)
-        case "start_run":
-            finalAction = start_run(atlasName: allPlayers[playerID]!.playerNumber)
-        case "run":
-            finalAction = run(atlasName: allPlayers[playerID]!.playerNumber)
-        case "stop_run":
-            finalAction = stop_run(atlasName: allPlayers[playerID]!.playerNumber)
-        case "start_jump":
-            finalAction = start_jump(atlasName: allPlayers[playerID]!.playerNumber)
-        case "fall":
-            finalAction = fall(atlasName: allPlayers[playerID]!.playerNumber)
-        default:
-            finalAction = nil
-        }
-        
-        if finalAction != nil {
-            DispatchQueue.main.sync {
-                self.allPlayers[playerID]?.playerSprite!.xScale = direction
-                self.allPlayers[playerID]?.playerSprite!.removeAllActions()
-                self.allPlayers[playerID]?.playerSprite!.run(SKAction.repeatForever(finalAction!))
-            }
-        }
     }
     
     func movePlayer(dx: CGFloat) {
@@ -195,52 +86,119 @@ class PlayerScene: SKScene, SKPhysicsContactDelegate {
         self.syncMovementsDelegate?.updateVelocity()
     }
     
+    func attack(vector: CGVector, angle: CGFloat, force: Double) {
+        let startAttack = self.playerSceneHelper?.animate(frame_name: "Start", atlasName: (localPlayer?.playerWeapon)!, duration: 0.10)
+        let attack = (self.playerSceneHelper?.animate(frame_name: "Attacking", atlasName: (localPlayer?.playerWeapon)!, duration: force))!
+        let movement = SKAction.move(by: vector, duration: force)
+        let rotate = SKAction.rotate(toAngle: angle, duration: 0.10)
+        let stopAnimation = SKAction.reversed(startAttack!)
+        localPlayer?.playerWeaponSprite?.run(SKAction.group([startAttack!, rotate])) {
+            self.localPlayer?.playerWeaponSprite?.constraints?.removeAll()
+            self.localPlayer?.playerWeaponSprite?.run(SKAction.group([attack, movement])) {
+                self.localPlayer?.playerWeaponSprite?.run(SKAction.group([stopAnimation()]))
+                self.playerSceneHelper?.resetPlayerWeapon(playerID: (self.localPlayer?.playerID)!)
+            }
+        }
+    }
+    
     private func idle(atlasName: String) -> SKAction {
         self.playerCurrAction = "idle"
-        return SKAction.repeatForever(animate(frame_name: "Idle", atlasName: atlasName, duration: 0.30))
+        return SKAction.repeatForever(self.playerSceneHelper!.animate(frame_name: "Idle", atlasName: atlasName, duration: 0.30))
     }
     
     private func start_run(atlasName: String) -> SKAction {
         self.playerCurrAction = "start_run"
-        return SKAction.repeat(animate(frame_name: "Start", atlasName: atlasName, duration: 0.05), count: 1)
+        return SKAction.repeat(self.playerSceneHelper!.animate(frame_name: "Start", atlasName: atlasName, duration: 0.05), count: 1)
     }
     
     private func run(atlasName: String) -> SKAction {
         self.playerCurrAction = "run"
-        return SKAction.repeat(animate(frame_name: "Run", atlasName: atlasName, duration: 0.085), count: 1)
+        return SKAction.repeat(self.playerSceneHelper!.animate(frame_name: "Run", atlasName: atlasName, duration: 0.085), count: 1)
     }
     
     private func stop_run(atlasName: String) -> SKAction {
         self.playerCurrAction = "stop_run"
-        return SKAction.repeat(animate(frame_name: "Start", atlasName: atlasName, duration: 0.15), count: 1)
+        return SKAction.repeat(self.playerSceneHelper!.animate(frame_name: "Start", atlasName: atlasName, duration: 0.15), count: 1)
     }
     
     private func start_jump(atlasName: String) -> SKAction {
         self.playerCurrAction = "start_jump"
-        return SKAction.repeat(animate(frame_name: "Jump", atlasName: atlasName, duration: 0.06), count: 1)
+        return SKAction.repeat(self.playerSceneHelper!.animate(frame_name: "Jump", atlasName: atlasName, duration: 0.06), count: 1)
     }
     
     private func fall(atlasName: String) -> SKAction {
         self.playerCurrAction = "fall"
-        return SKAction.repeatForever(animate(frame_name: "Fall", atlasName: atlasName, duration: 0.15))
-    }
-    
-    private func animate(frame_name: String, atlasName: String, duration: Double) -> SKAction {
-        let atlas = SKTextureAtlas(named: atlasName)
-        var frames = [SKTexture]()
-        
-        for name in atlas.textureNames.sorted() {
-            if name.contains(frame_name) {
-                frames.append(atlas.textureNamed(name))
-            }
-        }
-        return SKAction.animate(with: frames, timePerFrame: duration)
+        return SKAction.repeatForever(self.playerSceneHelper!.animate(frame_name: "Fall", atlasName: atlasName, duration: 0.15))
     }
     
     private func updateCamera() {
         if let camera = camera{
             if self.localPlayer?.playerSprite != nil {
                 camera.run(SKAction.move(to: CGPoint(x: (self.localPlayer?.playerSprite!.position.x)!, y: (self.localPlayer?.playerSprite!.position.y)! + CAMERA_Y_ADJUSTMENT), duration: 0.15))
+            }
+        }
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        if (contact.bodyA.collisionBitMask == 0) && (contact.bodyB.collisionBitMask == 1) {
+            print("Player and weapon collided")
+        }
+    }
+    
+    //MARK: UPDATE OTHER PLAYERS
+    
+    func updateOtherPlayerVelocity(playerID: String, velocity: CGVector?) {
+        if velocity != nil {
+            DispatchQueue.main.async {
+                self.allPlayers[playerID]?.playerSprite!.physicsBody?.velocity = velocity!
+            }
+        }
+    }
+    
+    func syncOtherPlayerPosition(playerID: String, x: CGFloat, y: CGFloat) {
+        let otherPlayer = allPlayers[playerID]?.playerSprite!
+        let syncPosition = CGPoint(x: x, y: y)
+        let distance = CGPointDistance(from: (otherPlayer?.position)!, to: syncPosition)
+        if distance >= 10 {
+            DispatchQueue.main.async {
+                otherPlayer?.position = syncPosition
+            }
+        }
+    }
+    
+    private func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
+        return sqrt(CGPointDistanceSquared(from: from, to: to));
+    }
+    
+    private func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y);
+    }
+    
+    func updateOtherPlayerAction(playerID: String, action: String, direction: CGFloat) {
+        let finalAction: SKAction?
+        
+        switch action {
+        case "idle":
+            finalAction = idle(atlasName: allPlayers[playerID]!.playerNumber)
+        case "start_run":
+            finalAction = start_run(atlasName: allPlayers[playerID]!.playerNumber)
+        case "run":
+            finalAction = run(atlasName: allPlayers[playerID]!.playerNumber)
+        case "stop_run":
+            finalAction = stop_run(atlasName: allPlayers[playerID]!.playerNumber)
+        case "start_jump":
+            finalAction = start_jump(atlasName: allPlayers[playerID]!.playerNumber)
+        case "fall":
+            finalAction = fall(atlasName: allPlayers[playerID]!.playerNumber)
+        default:
+            finalAction = nil
+        }
+        
+        if finalAction != nil {
+            DispatchQueue.main.sync {
+                self.allPlayers[playerID]?.playerSprite!.xScale = direction
+                self.allPlayers[playerID]?.playerSprite!.removeAllActions()
+                self.allPlayers[playerID]?.playerSprite!.run(SKAction.repeatForever(finalAction!))
             }
         }
     }
