@@ -16,11 +16,15 @@ func ^^ (radix: Double, power: Double) -> Double {
 
 class JoystickViewController: UIViewController, UIGestureRecognizerDelegate{
 
+    /** The background view of this joystick. */
     @IBOutlet weak var backgroundView: UIView!
+    /** The joystick controller itself. */
     @IBOutlet weak var joyStick: UIView!
-    
+    /** The delegate method for handling all joystick controller movement.*/
     var delegate: JoyStickViewControllerDelegate? = nil
+    /** The current vector the user is moving the character in.*/
     var currentUnitVector: (CGFloat, CGFloat)?
+    /** Is the joystick current updating its location.*/
     var updating = false
     
     override func viewDidLoad() {
@@ -48,6 +52,7 @@ class JoystickViewController: UIViewController, UIGestureRecognizerDelegate{
         self.delegate?.didStop()
     }
     
+    /** Updates the unit vectors for which direction the character is moving in.*/
     func update_joystick(touch: UITouch) {
         let unitVector = determineUnitVector(newPoint: touch.location(in: backgroundView))
         self.currentUnitVector = unitVector
@@ -59,6 +64,7 @@ class JoystickViewController: UIViewController, UIGestureRecognizerDelegate{
         }
     }
     
+    /** In a background thread, sends the unit vector to the delegate methods to move the character around.*/
     func sendDelegateMovements() {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             while self.currentUnitVector != nil {
@@ -80,6 +86,7 @@ class JoystickViewController: UIViewController, UIGestureRecognizerDelegate{
         }
     }
     
+    /** Given the current location of the joystick, returns the vector pointing from the center to the position.*/
     private func determineUnitVector(newPoint: CGPoint) -> (CGFloat, CGFloat) {
         let dx = newPoint.x - backgroundView.center.x
         let dy = newPoint.y - backgroundView.center.y
@@ -89,9 +96,13 @@ class JoystickViewController: UIViewController, UIGestureRecognizerDelegate{
 }
 
 protocol JoyStickViewControllerDelegate {
+    /** If the character moved.*/
     func didMove(x: CGFloat)
+    /** Character ducked.*/
     func didDuck()
+    /** Character jumped.*/
     func didJump()
+    /** Joystick stopped moving.*/
     func didStop()
 }
 

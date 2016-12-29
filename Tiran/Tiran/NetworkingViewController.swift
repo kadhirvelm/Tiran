@@ -9,17 +9,23 @@
 import UIKit
 import GameKit
 
-class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate, GKMatchmakerViewControllerDelegate, GKMatchDelegate {
+class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate, GKMatchmakerViewControllerDelegate {
     
+    /** True if the game center is available.*/
     var gameCenterAvailable = true
+    /** True if the user is authenticated by Game Center.*/
     var userAuthenticated = false
+    /** The current GKMatch from Game Center.*/
     var matchTiran: GKMatch? = nil
+    /** Match Button outlet.*/
+    @IBOutlet weak var match: UIButton!
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.authenticateLocalPlayer()
     }
     
+    /** Authenticates the local player with Game Center.*/
     func authenticateLocalPlayer() {
         let localPlayer = GKLocalPlayer.localPlayer()
         localPlayer.authenticateHandler = { (ViewController, error) -> Void in
@@ -34,8 +40,7 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
         }
     }
     
-    @IBOutlet weak var match: UIButton!
-    
+    /** If the user is authenticated, presents the matching view controller.*/
     @IBAction func match(_ sender: UIButton) {
         if self.userAuthenticated {
             for controller in self.childViewControllers {
@@ -47,6 +52,7 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
         }
     }
     
+    /** Practice segue instead of match.*/
     @IBAction func practice(_ sender: UIButton) {
         if self.userAuthenticated {
             self.performSegue(withIdentifier: "Practice", sender: self)
@@ -55,7 +61,7 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
         }
     }
     
-    
+    /** Creates a match request, with a max of 4 players.*/
     func createMatch() {
         let request = GKMatchRequest.init()
         request.maxPlayers = 4
@@ -64,6 +70,8 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
         matchController?.matchmakerDelegate = self
         self.present(matchController!, animated: true, completion: nil)
     }
+    
+    //MARK: Game Center Delegate Methods
     
     func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
         gameCenterViewController.dismiss(animated: true, completion: nil)
@@ -87,11 +95,6 @@ class NetworkingViewController: UIViewController, GKGameCenterControllerDelegate
     
     func matchmakerViewController(_ viewController: GKMatchmakerViewController, didFailWithError error: Error) {
         print(error)
-    }
-    
-    func match(_ match: GKMatch, didReceive data: Data, forRecipient recipient: GKPlayer, fromRemotePlayer player: GKPlayer) {
-        let string = String.init(data: data, encoding: String.Encoding.utf8)
-        print("\(player) --> \(string)")
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

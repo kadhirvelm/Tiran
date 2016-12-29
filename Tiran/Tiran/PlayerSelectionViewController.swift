@@ -11,23 +11,34 @@ import GameKit
 
 class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableViewDataSource, UITableViewDelegate {
 
+    /** All available icons for the player to pick from.*/
     var playerIcons = ["Player_1", "Player_2", "Player_3", "Player_4"]
+    /** The current selection of the player.*/
     var currentSelection = 0 {
         didSet {
             self.playerImage.image = UIImage(named: playerIcons[currentSelection])
         }
     }
+    /** The current match (Game Center).*/
     var currentMatch: GKMatch? = nil
+    /** The local player GKLocalPlayer (Game Center).*/
     let localGKPlayer = GKLocalPlayer.localPlayer()
-    
+    /** All other players, with the playerID as the key, and associated Player (class) as the value.*/
     var otherPlayers = [String: Player]()
     
+    /** All other players UITableView to see what everyone else has selected.*/
     @IBOutlet weak var playersTable: UITableView!
+    /** The player's current selection image.*/
     @IBOutlet weak var playerImage: UIImageView!
+    /** The local player name label.*/
     @IBOutlet weak var localPlayer: UILabel!
+    /** The next player selection button.*/
     @IBOutlet weak var nextImage: UIButton!
+    /** The previous player selection button.*/
     @IBOutlet weak var previousImage: UIButton!
+    /** Lock in button.*/
     @IBOutlet weak var lockIn: UIButton!
+    /** Error selecting the current player.*/
     @IBOutlet weak var errorSelecting: UILabel!
     
     override func viewDidLoad() {
@@ -39,6 +50,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
+    /** Populates the otherPlayers array with player, using the playerID as the key, and the player class as the value.*/
     func populateOtherPlayers() {
         for player in currentMatch!.players {
             let newPlayer = Player(playerID: player.playerID!, playerName: player.alias!, playerNumber: "None", playerLockedIn: false)
@@ -47,6 +59,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         playersTable.reloadData()
     }
     
+    /** Previous character selection.*/
     @IBAction func previous(_ sender: Any) {
         errorSelecting.isHidden = true
         if currentSelection > 0 {
@@ -56,6 +69,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
+    /** Next character selection.*/
     @IBAction func next(_ sender: UIButton) {
         errorSelecting.isHidden = true
         if currentSelection < 3 {
@@ -65,6 +79,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
+    /** Locks in the current players selection and updates all other players if the selection is legal.*/
     @IBAction func lockIn(_ sender: UIButton) {
         if checkIfCanLockIn() == nil {
             errorSelecting.isHidden = true
@@ -81,6 +96,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
+    /** Checks to make sure all other players have not selected the current character, and if someone has, returns that user's playername (Game Center alias).*/
     func checkIfCanLockIn() -> String? {
         for player in self.otherPlayers.values {
             if player.playerLockedIn {
@@ -92,7 +108,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         return nil
     }
     
-    
+    /** Using the currentMatch, sends the selection data to all other players reliably.*/
     func updateLockIn() {
         let dataSender = ["playerID": self.localGKPlayer.playerID, "playerSelected": playerIcons[currentSelection]]
         let selectionData = NSKeyedArchiver.archivedData(withRootObject: dataSender)
@@ -104,6 +120,8 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
+    //MARK: GKMatchDelegate Methods
+    
     func match(_ match: GKMatch, didReceive data: Data, fromRemotePlayer player: GKPlayer) {
         let dictionary: Dictionary? = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String : String]
         let playerID = dictionary?["playerID"]
@@ -111,6 +129,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         updateOtherPlayerSelections(playerID: playerID!, playerSelected: playerSelected!)
     }
     
+    /** Updates all other player selections in the table view.*/
     func updateOtherPlayerSelections(playerID: String, playerSelected: String) {
         for player in self.otherPlayers.values {
             if player.playerID == playerID {
@@ -122,6 +141,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         transitionToField()
     }
     
+    /** If everyone has locked in, indicates the battle is starting and segues to the battle view.*/
     func transitionToField() {
         if checkIfAllLockedIn() {
             indicateBattleStarting()
@@ -129,6 +149,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
+    /** Indicates the battle is starting. NEEDS TO BE IMPLEMENTED.*/
     func indicateBattleStarting() {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {
             sleep(3)
@@ -136,6 +157,7 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
     }
     
+    /** Loops through all players and returns true if all players have checked in, including local player.*/
     private func checkIfAllLockedIn() -> Bool {
         for player in otherPlayers.values {
             if player.playerLockedIn == false {
@@ -144,6 +166,8 @@ class PlayerSelectionViewController: UIViewController, GKMatchDelegate, UITableV
         }
         return !self.lockIn.isEnabled
     }
+    
+    //MARK: UITableView Delegate Methods
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return otherPlayers.count
