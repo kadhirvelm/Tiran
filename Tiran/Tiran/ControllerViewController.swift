@@ -22,7 +22,7 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
     var playerField: PlayerScene? = nil
     var countSinceSync = 0 {
         didSet {
-            if countSinceSync == 6 {
+            if countSinceSync == 10 {
                 updatePosition()
                 countSinceSync = 0
             }

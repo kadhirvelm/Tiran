@@ -61,8 +61,8 @@ class PlayerSceneHelper {
             
             resetPlayerWeapon(playerID: player.playerID)
             
-            player.playerCurrentHP = player.playerMaxHP!/2
-            player.playerCurrentVel = player.playerMaxVel!/2
+            player.playerCurrentHP = player.playerMaxHP!
+            player.playerCurrentVel = player.playerMaxVel!
         }
     }
     
@@ -71,7 +71,6 @@ class PlayerSceneHelper {
         let weaponConstraint = SKConstraint.distance(SKRange(lowerLimit: 25, upperLimit: 40), to: (player?.playerNameSprite)!)
         let weaponConstraint2 = SKConstraint.distance(SKRange(lowerLimit: 35, upperLimit: 40), to: (player?.playerSprite)!)
         player?.playerWeaponSprite?.constraints = [weaponConstraint, weaponConstraint2]
-        
     }
     
     func animate(frame_name: String, atlasName: String, duration: Double) -> SKAction {

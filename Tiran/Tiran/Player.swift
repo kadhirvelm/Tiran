@@ -9,13 +9,18 @@
 import GameKit
 
 class Player {
-    /** Initialization of Player. */
+    //MARK: Initialization of Player
+    /** Player alias name from Game Center.*/
     var playerName: String
+    /** Player ID from Game Center.*/
     var playerID: String
     
-    /** Character selection screen. */
+    //MARK: Created at Character selection screen
+    /** Chosen player weapon, currently defaulted to Sword_Basic.*/
     var playerWeapon: String
+    /** Selected player number (eg. Player_1).*/
     var playerNumber: String
+    /** .*/
     var playerLockedIn: Bool
     
     /** Initialization of battle field. */
@@ -32,7 +37,6 @@ class Player {
     var playerCurrentHP: Int? {
         didSet {
             let newWidth = ((self.playerCurrentDamageSprite?.position.x)! * 2) * CGFloat((playerMaxHP! - playerCurrentHP!)) / CGFloat(playerMaxHP!)
-            print("Total width \(self.playerMaxHPSprite?.size.width) and new width \(self.playerCurrentDamageSprite?.size.width)")
             self.playerCurrentDamageSprite?.run(SKAction.resize(toWidth: newWidth, duration: 0.15))
         }
     }
@@ -61,4 +65,8 @@ class Player {
         self.playerMaxVelSprite = playerMaxVelSprite
         self.playerCurrentVelConsumedSprite = playerCurrentVelConsumedSprite
     }
+}
+
+struct PlayerWeapon {
+    static let swordBasic = "Sword_Basic"
 }

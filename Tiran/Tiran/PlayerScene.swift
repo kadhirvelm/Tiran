@@ -159,7 +159,7 @@ class PlayerScene: SKScene, SKPhysicsContactDelegate {
         let otherPlayer = allPlayers[playerID]?.playerSprite!
         let syncPosition = CGPoint(x: x, y: y)
         let distance = CGPointDistance(from: (otherPlayer?.position)!, to: syncPosition)
-        if distance >= 10 {
+        if distance >= 30 {
             DispatchQueue.main.async {
                 otherPlayer?.position = syncPosition
             }
@@ -195,7 +195,7 @@ class PlayerScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if finalAction != nil {
-            DispatchQueue.main.sync {
+            DispatchQueue.main.async {
                 self.allPlayers[playerID]?.playerSprite!.xScale = direction
                 self.allPlayers[playerID]?.playerSprite!.removeAllActions()
                 self.allPlayers[playerID]?.playerSprite!.run(SKAction.repeatForever(finalAction!))
