@@ -12,23 +12,24 @@ import SpriteKit
 
 class ControllerViewController: UIViewController, JoyStickViewControllerDelegate, GKMatchDelegate, syncMovementsDelegate {
     
-    /** Needs to be set. */
+    /** The GKMatch (Game Center) associated with this game. */
     var match: GKMatch? = nil
-    /** Needs to be set. */
+    /** The local player. */
     var currPlayer: Player? = nil
-    /** Needs to be set. */
+    /** All other players playing in this match. */
     var otherPlayers = [String: Player]()
-    
+    /** The sprite scene where all players are battling.*/
     var playerField: PlayerScene? = nil
+    /** Count since synchronizing the positions with other phones.*/
     var countSinceSync = 0 {
         didSet {
-            if countSinceSync == 6 {
+            if countSinceSync == 10 {
                 updatePosition()
                 countSinceSync = 0
             }
         }
     }
-    
+    /** Data to be sent to other players.*/
     var dataSender: [String: Any?]? = nil
     
     override func viewDidLoad() {
@@ -65,21 +66,7 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
         }
     }
     
-    func didMove(x: CGFloat) {
-        self.playerField?.movePlayer(dx: x)
-    }
-    
-    func didDuck() { }
-    
-    func didJump() {
-        self.playerField?.jumpPlayer()
-        countSinceSync = 0
-    }
-    
-    func didStop() {
-        self.playerField?.stopPlayer()
-    }
-    
+    /** All current touches on the screen outside of the joystick, for attacks.*/
     var currTouches = [CGPoint]()
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -100,10 +87,27 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
         }
     }
     
+    /** After the touches have ended, handles the resulting vectors for a weapon attack.*/
     func handleVectors(forceVector: CGVector, changeVector: CGVector) {
         //use the force to determine how long it should take to traverse the space
         let angle = tan(forceVector.dy/forceVector.dx) //from player's position to the end point of the swipe
         self.playerField?.attack(vector: changeVector, angle: angle, force: 0.5)
+    }
+    
+    //MARK: JoystickViewControllerDelegate Methods
+    
+    func didMove(x: CGFloat) {
+        self.playerField?.movePlayer(dx: x)
+    }
+    func didDuck() { }
+    
+    func didJump() {
+        self.playerField?.jumpPlayer()
+        countSinceSync = 0
+    }
+    
+    func didStop() {
+        self.playerField?.stopPlayer()
     }
     
     //MARK: DELEGATE METHODS FOR syncMovements
@@ -126,6 +130,8 @@ class ControllerViewController: UIViewController, JoyStickViewControllerDelegate
         }
     }
     
+    /** If the velocity physics body has been updated 10 times for the local player, will sync this character's
+     location with everyone else.*/
     func updatePosition() {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async {
             if self.match != nil {
